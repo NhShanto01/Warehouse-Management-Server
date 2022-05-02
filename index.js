@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
 
@@ -30,6 +30,42 @@ async function run() {
             const products = await cursor.toArray();
             res.send(products);
         });
+
+        // [PUT - METHOD]
+
+        app.put('/update/:id', async (req, res) => {
+            const id = req.params.id;
+            const user = req.body;
+            console.log(user);
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    quantity: user.newQuantity
+                },
+            };
+            result = await productCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        });
+
+        app.put('/delivered/:id', async (req, res) => {
+            const id = req.params.id;
+            const user = req.body;
+
+            console.log(user);
+
+            const deliver = user.quantity - 1;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    quantity: deliver
+                },
+            };
+            result = await productCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        });
+
     }
     finally {
 
