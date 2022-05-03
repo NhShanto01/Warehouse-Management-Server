@@ -31,17 +31,25 @@ async function run() {
             res.send(products);
         });
 
+        app.get('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const products = await productCollection.findOne(query);
+            // const products = await cursor.toArray();
+            res.send(products);
+        });
+
         // [PUT - METHOD]
 
-        app.put('/update/:id', async (req, res) => {
+        app.put('/product/:id', async (req, res) => {
             const id = req.params.id;
-            const user = req.body;
-            console.log(user);
+            const itemDetail = req.body;
+            console.log(itemDetail);
             const filter = { _id: ObjectId(id) };
             const options = { upsert: true };
             const updateDoc = {
                 $set: {
-                    quantity: user.newQuantity
+                    quantity: itemDetail.newQuantity
                 },
             };
             result = await productCollection.updateOne(filter, updateDoc, options);
@@ -50,11 +58,11 @@ async function run() {
 
         app.put('/delivered/:id', async (req, res) => {
             const id = req.params.id;
-            const user = req.body;
+            const itemDetail = req.body;
 
-            console.log(user);
+            console.log(itemDetail);
 
-            const deliver = user.quantity - 1;
+            const deliver = itemDetail.quantity - 1;
             const filter = { _id: ObjectId(id) };
             const options = { upsert: true };
             const updateDoc = {
@@ -63,6 +71,13 @@ async function run() {
                 },
             };
             result = await productCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
+        });
+
+        app.delete('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await productCollection.deleteOne(query);
             res.send(result);
         });
 
