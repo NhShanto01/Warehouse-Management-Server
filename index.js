@@ -22,7 +22,9 @@ async function run() {
     try {
         await client.connect();
         const productCollection = client.db('sportsZone').collection('product');
+        const itemCollection = client.db('sportsZone').collection('ownItem');
 
+        // [GET - METHOD]
 
         app.get('/products', async (req, res) => {
             const query = {};
@@ -35,7 +37,6 @@ async function run() {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const products = await productCollection.findOne(query);
-            // const products = await cursor.toArray();
             res.send(products);
         });
 
@@ -74,12 +75,26 @@ async function run() {
             res.send(result);
         });
 
+        // [DELETE - METHOD]
         app.delete('/product/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await productCollection.deleteOne(query);
             res.send(result);
         });
+
+        // [POST - METHOD]
+        app.post('/products', async (req, res) => {
+            const newProduct = req.body;
+            const result = await productCollection.insertOne(newProduct);
+            res.send(result);
+        })
+
+        // app.post('/products', async (req, res) => {
+        //     const ownItem = req.body;
+        //     const result = await itemCollection.insertOne(ownItem);
+        //     res.send(result);
+        // })
 
     }
     finally {
