@@ -22,7 +22,6 @@ async function run() {
     try {
         await client.connect();
         const productCollection = client.db('sportsZone').collection('product');
-        const itemCollection = client.db('sportsZone').collection('ownItem');
 
         // [GET - METHOD]
 
@@ -90,12 +89,6 @@ async function run() {
             res.send(result);
         })
 
-        // app.post('/products', async (req, res) => {
-        //     const ownItem = req.body;
-        //     const result = await itemCollection.insertOne(ownItem);
-        //     res.send(result);
-        // })
-
     }
     finally {
 
@@ -105,9 +98,9 @@ async function run() {
 run().catch(console.dir);
 
 app.get('/', (req, res) => {
-    res.send('Running This Warehouse Server');
+    res.send('heroku warehosue running');
 });
 
 app.listen(port, () => {
-    console.log('Listening this port', port);
+    console.log('Listening ', port);
 })
